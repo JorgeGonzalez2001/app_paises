@@ -12,7 +12,8 @@ class EcuadorScreen extends StatefulWidget {
 class _EcuadorScreenState extends State<EcuadorScreen> {
   String ciudad_name = "";
   String link_bandera = "";
-  String link_escudo ="";
+  String link_escudo = "";
+  String poblacion = "";
 
   @override
   void initState() {
@@ -26,36 +27,25 @@ class _EcuadorScreenState extends State<EcuadorScreen> {
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      //print(jsonDecode(response.body));
-
       var data = jsonDecode(response.body);
-
       var flag = data[0]['flags']['png'];
+      var escudo = data[0]['coatOfArms']['png'];
+      var population = data[0]['population'];
+      
       print(flag);
+      print(escudo);
+      print(population);
 
       setState(() {
         link_bandera = flag;
+        link_escudo = escudo;
+        poblacion = population.toString();
       });
     }
   }
 
   Future<void> getEscudo() async {
-    final url = Uri.parse("https://mainfacts.com/media/images/coats_of_arms/ec.png");
-
-    final response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      //print(jsonDecode(response.body));
-
-      var data = jsonDecode(response.body);
-
-      var flag = data[0]['flags']['png'];
-      print(flag);
-
-      setState(() {
-        link_escudo = flag;
-      });
-    }
+    // Ya no necesitamos esta función separada, se obtiene en getData()
   }
 
   @override
@@ -64,19 +54,23 @@ class _EcuadorScreenState extends State<EcuadorScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(" Ecuador"),
+          Text("Ecuador"),
           Image.network(link_bandera),
-          Image.network(link_escudo),
+          Image.network(
+            link_escudo,
+            width: 150,
+            height: 200,
+            ),
+          Text("Población: $poblacion"),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            child: Text("Volver ")
+            child: Text("Volver")
           ),
           TextButton(
             onPressed: () {
               getData();
-              getEscudo();
             },
             child: Text("Cargar")
           )

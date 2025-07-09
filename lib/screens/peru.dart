@@ -12,6 +12,8 @@ class PeruScreen extends StatefulWidget {
 class _PeruScreenState extends State<PeruScreen> {
   String ciudad_name = "";
   String link_bandera = "";
+  String link_escudo = "";
+  String poblacion = "";
 
   @override
   void initState() {
@@ -25,15 +27,19 @@ class _PeruScreenState extends State<PeruScreen> {
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      //print(jsonDecode(response.body));
-
       var data = jsonDecode(response.body);
-
       var flag = data[0]['flags']['png'];
+      var escudo = data[0]['coatOfArms']['png'];
+      var population = data[0]['population'];
+      
       print(flag);
+      print(escudo);
+      print(population);
 
       setState(() {
         link_bandera = flag;
+        link_escudo = escudo;
+        poblacion = population.toString();
       });
     }
   }
@@ -46,11 +52,17 @@ class _PeruScreenState extends State<PeruScreen> {
         children: [
           Text("Perú"),
           Image.network(link_bandera),
+          Image.network(
+            link_escudo,
+            width: 150,
+            height: 200,
+            ),
+          Text("Población: $poblacion"),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            child: Text("Volver ")
+            child: Text("Volver")
           ),
           TextButton(
             onPressed: () {
